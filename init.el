@@ -58,12 +58,6 @@
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 
-(global-set-key (kbd "C-'") 'avy-goto-char)
-(global-set-key (kbd "M-g g") 'avy-goto-line)
-(global-set-key (kbd "C-;") 'avy-goto-word-1)
-(global-set-key (kbd "C-:") 'avy-goto-word-0)
-(setq avy-keys (append (number-sequence ?a ?z) (number-sequence ?A ?Z)))
-
 (autoload 'zap-up-to-char "misc"
   "Kill up to, but not including ARGth occurrence of CHAR.")
 (global-set-key (kbd "M-z") 'zap-up-to-char)
@@ -74,10 +68,6 @@
 
 (global-set-key (kbd "<C-M-backspace>") 'backward-kill-sexp)
 
-(global-set-key (kbd "M-m") 'jump-char-forward)
-(global-set-key (kbd "M-M") 'jump-char-backward)
-(global-set-key (kbd "s-m") 'jump-char-backward)
-
 (windmove-default-keybindings)
 
 (require 'package)
@@ -85,14 +75,28 @@
              '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-;; (autoload 'tern-mode "tern.el" nil t)
+(package-install 'jump-char)
+(global-set-key (kbd "M-m") 'jump-char-forward)
+(global-set-key (kbd "M-M") 'jump-char-backward)
+(global-set-key (kbd "s-m") 'jump-char-backward)
 
+(package-install 'avy)
+(global-set-key (kbd "C-'") 'avy-goto-char)
+(global-set-key (kbd "M-g g") 'avy-goto-line)
+(global-set-key (kbd "C-;") 'avy-goto-word-1)
+(global-set-key (kbd "C-:") 'avy-goto-word-0)
+(setq avy-keys (append (number-sequence ?a ?z) (number-sequence ?A ?Z)))
+
+(package-install 'expand-region)
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+(package-install 'magit)
 (require 'magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 
+(package-install 'company)
+(package-install 'company-tern)
 (add-hook 'after-init-hook 'global-company-mode)
 ;; (with-eval-after-load 'company
 ;;   (add-to-list 'company-backends 'company-tern))
