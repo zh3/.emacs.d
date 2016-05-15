@@ -3,7 +3,7 @@
 	url = https://github.com/jaypei/emacs-neotree.git
 [submodule "web-mode"]
 	path = web-mode
-	url = git@github.com:fxbois/web-mode.git
+	url = https://github.com/fxbois/web-mode.git
 [submodule "emacs-color-theme-solarized"]
 	path = emacs-color-theme-solarized
-	url = git@github.com:sellout/emacs-color-theme-solarized.git
+	url = https://github.com/sellout/emacs-color-theme-solarized.git
