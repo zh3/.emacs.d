@@ -11,6 +11,12 @@
       (setq mac-command-modifier 'meta)
       (setq mac-option-modifier 'super)))
 
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
 (defun my-bell-function ()
   (unless (memq this-command
         '(isearch-abort abort-recursive-edit exit-minibuffer
@@ -41,10 +47,33 @@
 (add-to-list 'load-path "~/.emacs.d/web-mode")
 (require 'web-mode)
 
-(add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-jsx-mode))
 (add-to-list 'auto-mode-alist '("\\.[s]css$" . web-mode))
 (setq web-mode-content-types-alist
   '(("jsx" . "\\.js[x]?\\'")))
+
+(package-install 'js2-mode)
+(defun my-js2-mode-hook ()
+  (tern-mode t)
+)
+(add-hook 'js2-mode-hook 'my-js2-mode-hook)
+
+(package-install 'flycheck)
+(global-flycheck-mode)
+; use local eslint for each file
+; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
+(defun my/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
+(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+(add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
 (defun my-web-mode-hook ()
   (setq web-mode-markup-indent-offset 2)
@@ -69,11 +98,17 @@
 (global-set-key (kbd "<C-M-backspace>") 'backward-kill-sexp)
 
 (windmove-default-keybindings)
+;; Make windmove work in org-mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(setq org-default-notes-file "~/org/notes.org")
+(define-key global-map "\C-cc" 'org-capture)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
 
 (package-install 'jump-char)
 (global-set-key (kbd "M-m") 'jump-char-forward)
@@ -97,9 +132,26 @@
 
 (package-install 'company)
 (package-install 'company-tern)
+(setq company-global-modes '(not org-mode))
 (add-hook 'after-init-hook 'global-company-mode)
 ;; (with-eval-after-load 'company
 ;;   (add-to-list 'company-backends 'company-tern))
+
+(package-install 'tide)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -121,11 +173,25 @@
  '(global-linum-mode t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(js-indent-level 2)
+ '(js2-basic-offset 2)
+ '(js2-highlight-level 3)
+ '(js2-mode-show-parse-errors nil)
+ '(js2-mode-show-strict-warnings nil)
+ '(js2-strict-cond-assign-warning nil)
+ '(js2-strict-inconsistent-return-warning nil)
+ '(js2-strict-missing-semi-warning nil)
+ '(js2-strict-trailing-comma-warning nil)
+ '(js2-strict-var-hides-function-arg-warning nil)
+ '(js2-strict-var-redeclaration-warning nil)
+ '(json-reformat:indent-width 2)
  '(neo-window-width 35)
+ '(org-agenda-files "~/org/.agenda_files")
  '(require-final-newline t)
  '(show-paren-delay 0)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
+ '(typescript-indent-level 2)
  '(windmove-wrap-around t)
  '(word-wrap t))
 (custom-set-faces
@@ -133,7 +199,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(ediff-current-diff-A ((t (:background "#553333" :foreground "highlightColor"))))
+ '(ediff-current-diff-B ((t (:background "#335533" :foreground "highlightColor"))))
+ '(ediff-current-diff-C ((t (:background "#888833" :foreground "highlightColor")))))
 
 (load-theme 'solarized t)
 (put 'scroll-left 'disabled nil)
