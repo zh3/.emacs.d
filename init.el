@@ -1,6 +1,8 @@
 (defun system-is-mac ()
   (interactive)
-  (string-equal system-type "darwin"))
+  (string-equal system-type "darwin")
+  (setq exec-path (append exec-path '(getenv "/usr/local/bin")))
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin")))
 
 (defun system-is-linux ()
   (interactive)
@@ -29,6 +31,13 @@
 (setq ido-everywhere t)
 (ido-mode 1)
 (setq ido-create-new-buffer 'always)
+
+(package-install 'multiple-cursors)
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 (global-set-key [wheel-right] 'scroll-left)
 (global-set-key [wheel-left] 'scroll-right)
@@ -111,9 +120,8 @@
 (setq org-log-done t)
 
 (package-install 'jump-char)
-(global-set-key (kbd "M-m") 'jump-char-forward)
-(global-set-key (kbd "M-M") 'jump-char-backward)
-(global-set-key (kbd "s-m") 'jump-char-backward)
+(global-set-key (kbd "s-f") 'jump-char-forward)
+(global-set-key (kbd "s-F") 'jump-char-backward)
 
 (package-install 'avy)
 (global-set-key (kbd "C-'") 'avy-goto-char)
@@ -153,6 +161,9 @@
 (setq company-tooltip-align-annotations t)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
+(require 'evil)
+(evil-mode 1)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -169,8 +180,10 @@
  '(custom-safe-themes
    (quote
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
+ '(evil-default-state (quote emacs))
  '(frame-background-mode (quote dark))
  '(global-linum-mode t)
+ '(global-subword-mode t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(js-indent-level 2)
@@ -185,8 +198,12 @@
  '(js2-strict-var-hides-function-arg-warning nil)
  '(js2-strict-var-redeclaration-warning nil)
  '(json-reformat:indent-width 2)
+ '(magit-commit-arguments nil)
  '(neo-window-width 35)
  '(org-agenda-files "~/org/.agenda_files")
+ '(package-selected-packages
+   (quote
+    (company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
  '(require-final-newline t)
  '(show-paren-delay 0)
  '(show-paren-mode t)
