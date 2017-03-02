@@ -27,9 +27,12 @@
     (ding)))
 (setq ring-bell-function 'my-bell-function)
 
+(package-install 'flx-ido)
+(require 'flx-ido)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
-(ido-mode 1)
+(flx-ido-mode 1)
+;; (ido-mode 1)
 (setq ido-create-new-buffer 'always)
 
 (package-install 'multiple-cursors)
@@ -45,6 +48,31 @@
 (global-set-key [double-wheel-left] 'scroll-right)
 (global-set-key [triple-wheel-right] 'scroll-left)
 (global-set-key [triple-wheel-left] 'scroll-right)
+
+(global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x C-c") 'delete-frame)
+
+(global-set-key (kbd "<f2>") 'rgrep)
+
+(package-install 'helm)
+(require 'helm)
+(require 'helm-config)
+
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
+
+(setq helm-autoresize-max-height 0)
+(setq helm-autoresize-min-height 20)
+(helm-autoresize-mode 1)
+
+(helm-mode 1)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -184,6 +212,26 @@
  '(frame-background-mode (quote dark))
  '(global-linum-mode t)
  '(global-subword-mode t)
+ '(helm-completing-read-handlers-alist
+   (quote
+    ((rgrep . ido)
+     (find-file . ido)
+     (describe-function . helm-completing-read-symbols)
+     (describe-variable . helm-completing-read-symbols)
+     (describe-symbol . helm-completing-read-symbols)
+     (debug-on-entry . helm-completing-read-symbols)
+     (find-function . helm-completing-read-symbols)
+     (disassemble . helm-completing-read-symbols)
+     (trace-function . helm-completing-read-symbols)
+     (trace-function-foreground . helm-completing-read-symbols)
+     (trace-function-background . helm-completing-read-symbols)
+     (find-tag . helm-completing-read-with-cands-in-buffer)
+     (org-capture . helm-org-completing-read-tags)
+     (org-set-tags . helm-org-completing-read-tags)
+     (ffap-alternate-file)
+     (tmm-menubar)
+     (find-file)
+     (execute-extended-command))))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(js-indent-level 2)
