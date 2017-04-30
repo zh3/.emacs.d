@@ -31,8 +31,8 @@
 (require 'flx-ido)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
-(flx-ido-mode 1)
-;; (ido-mode 1)
+;; (flx-ido-mode 1)
+(ido-mode 1)
 (setq ido-create-new-buffer 'always)
 
 (package-install 'multiple-cursors)
@@ -54,25 +54,25 @@
 
 (global-set-key (kbd "<f2>") 'rgrep)
 
-(package-install 'helm)
-(require 'helm)
-(require 'helm-config)
+;; (package-install 'helm)
+;; (require 'helm)
+;; (require 'helm-config)
 
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+;; (global-unset-key (kbd "C-x c"))
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+;; (when (executable-find "curl")
+;;   (setq helm-google-suggest-use-curl-p t))
 
-(setq helm-autoresize-max-height 0)
-(setq helm-autoresize-min-height 20)
-(helm-autoresize-mode 1)
+;; (setq helm-autoresize-max-height 0)
+;; (setq helm-autoresize-min-height 20)
+;; (helm-autoresize-mode 1)
 
-(helm-mode 1)
+;; (helm-mode 1)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -192,6 +192,25 @@
 (require 'evil)
 (evil-mode 1)
 
+;;  (defun my-move-key (keymap-from keymap-to key)
+;;      "Moves key binding from one keymap to another, deleting from the old location. "
+;;      (define-key keymap-to key (lookup-key keymap-from key))
+;;      (define-key keymap-from key nil))
+;; (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+;; (my-move-key evil-motion-state-map evil-normal-state-map " ")
+(add-hook 'with-editor-mode-hook 'evil-insert-state)
+
+(define-key evil-motion-state-map " " nil)
+(define-key evil-motion-state-map "RET" nil)
+(define-key evil-motion-state-map " u" 'universal-argument)
+(define-key evil-motion-state-map " mgg" 'tern-find-definition)
+(define-key evil-motion-state-map " m\C-g" 'tern-pop-find-definition)
+
+(defun my-shell-mode ()
+  (local-set-key (kbd "<up>") 'comint-previous-input)
+  (local-set-key (kbd "<down>") 'comint-next-input))
+(add-hook 'shell-mode-hook 'my-shell-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -208,7 +227,7 @@
  '(custom-safe-themes
    (quote
     ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
- '(evil-default-state (quote emacs))
+ '(evil-want-C-u-scroll t)
  '(frame-background-mode (quote dark))
  '(global-linum-mode t)
  '(global-subword-mode t)
@@ -257,6 +276,7 @@
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(typescript-indent-level 2)
+ '(wdired-allow-to-change-permissions t)
  '(windmove-wrap-around t)
  '(word-wrap t))
 (custom-set-faces
