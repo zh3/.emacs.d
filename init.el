@@ -31,7 +31,7 @@
 (require 'flx-ido)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
-;; (flx-ido-mode 1)
+(flx-ido-mode 1)
 (ido-mode 1)
 (setq ido-create-new-buffer 'always)
 
@@ -53,6 +53,8 @@
 (global-set-key (kbd "C-x C-c") 'delete-frame)
 
 (global-set-key (kbd "<f2>") 'rgrep)
+
+(require 'linum-relative)
 
 ;; (package-install 'helm)
 ;; (require 'helm)
@@ -134,7 +136,7 @@
 
 (global-set-key (kbd "<C-M-backspace>") 'backward-kill-sexp)
 
-(windmove-default-keybindings)
+(windmove-default-keybindings 'super)
 ;; Make windmove work in org-mode:
 (add-hook 'org-shiftup-final-hook 'windmove-up)
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
@@ -265,12 +267,14 @@
  '(js2-strict-var-hides-function-arg-warning nil)
  '(js2-strict-var-redeclaration-warning nil)
  '(json-reformat:indent-width 2)
+ '(linum-relative-current-symbol "")
+ '(linum-relative-global-mode t)
  '(magit-commit-arguments nil)
  '(neo-window-width 35)
  '(org-agenda-files "~/org/.agenda_files")
  '(package-selected-packages
    (quote
-    (company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
+    (linum-relative company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
  '(require-final-newline t)
  '(show-paren-delay 0)
  '(show-paren-mode t)
