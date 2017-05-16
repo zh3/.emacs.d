@@ -168,6 +168,8 @@
 (require 'magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 
+(require 'evil-magit)
+
 (package-install 'company)
 (package-install 'company-tern)
 (setq company-global-modes '(not org-mode))
@@ -274,7 +276,7 @@
  '(org-agenda-files "~/org/.agenda_files")
  '(package-selected-packages
    (quote
-    (linum-relative company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
+    (evil-magit linum-relative company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
  '(require-final-newline t)
  '(show-paren-delay 0)
  '(show-paren-mode t)
