@@ -281,7 +281,7 @@
  '(show-paren-delay 0)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
- '(typescript-indent-level 2)
+ '(typescript-indent-level 4)
  '(wdired-allow-to-change-permissions t)
  '(windmove-wrap-around t)
  '(word-wrap t))
