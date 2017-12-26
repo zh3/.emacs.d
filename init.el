@@ -95,8 +95,6 @@
 (defun my-js2-mode-hook ()
   (tern-mode t)
 )
-(add-hook 'js2-mode-hook 'my-js2-mode-hook)
-
 (package-install 'flycheck)
 (global-flycheck-mode)
 ; use local eslint for each file
@@ -113,6 +111,18 @@
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+(add-hook 'js2-mode-hook 'eslintd-fix-mode)
+(add-hook 'js2-jsx-mode-hook 'eslintd-fix-mode)
+
+(defun eslint-fix-file ()
+  (interactive)
+  (message "eslint --fixing the file" (buffer-file-name))
+  (shell-command (concat "eslint --fix " (buffer-file-name))))
+
+(defun eslint-fix-file-and-revert ()
+  (interactive)
+  (eslint-fix-file)
+  (revert-buffer t t))
 
 (defun my-web-mode-hook ()
   (setq web-mode-markup-indent-offset 2)
@@ -168,11 +178,10 @@
 (require 'magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 
-(require 'evil-magit)
-
 (package-install 'company)
 (package-install 'company-tern)
 (setq company-global-modes '(not org-mode))
+(setq company-global-modes '(not tide-mode))
 (add-hook 'after-init-hook 'global-company-mode)
 ;; (with-eval-after-load 'company
 ;;   (add-to-list 'company-backends 'company-tern))
@@ -184,6 +193,7 @@
   (flycheck-mode +1)
   (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
   ;; company is an optional dependency. You have to
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
@@ -195,6 +205,8 @@
 
 (require 'evil)
 (evil-mode 1)
+
+(require 'evil-magit)
 
 ;;  (defun my-move-key (keymap-from keymap-to key)
 ;;      "Moves key binding from one keymap to another, deleting from the old location. "
@@ -272,11 +284,12 @@
  '(linum-relative-current-symbol "")
  '(linum-relative-global-mode t)
  '(magit-commit-arguments nil)
+ '(magit-git-executable "/usr/local/bin/git")
  '(neo-window-width 35)
  '(org-agenda-files "~/org/.agenda_files")
  '(package-selected-packages
    (quote
-    (evil-magit linum-relative company flycheck tide multiple-cursors magit jump-char json-mode js2-mode company-tern avy)))
+    (company-tern company flycheck tide eslintd-fix prettier-js evil-magit linum-relative multiple-cursors magit jump-char json-mode js2-mode avy)))
  '(require-final-newline t)
  '(show-paren-delay 0)
  '(show-paren-mode t)
